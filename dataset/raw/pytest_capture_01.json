@@ -1,0 +1,28 @@
+{
+  "capture_id": "pytest_capture_01",
+  "vpn_mode": "tunnel",
+  "ip_version": "ipv4",
+  "encryption": "AES-256-GCM",
+  "pfs": true,
+  "dh_group": 19,
+  "dh_group_name": "ecp256",
+  "traffic_type": "icmp",
+  "ike_proposal": "aes256gcm16-sha256-ecp256,aes256-sha256-ecp256",
+  "esp_proposal": "aes256gcm16-ecp256!",
+  "timestamp": "2026-10-06T08:43:54Z",
+  "packet_count": 26,
+  "ike_packets": 6,
+  "esp_packets": 20,
+  "file_path": "dataset\\captures\\pytest_capture_01.pcap",
+  "file_size_bytes": 5988,
+  "tunnel_established": true,
+  "traffic_generation_result": {
+    "traffic_type": "icmp",
+    "target_ip": "10.10.2.1",
+    "source_ip": "10.10.1.1",
+    "packets_sent": 10,
+    "success": true,
+    "duration_seconds": 4.610412120819092,
+    "stdout": "PING 10.10.2.1 (10.10.2.1) from 10.10.1.1 : 64(92) bytes of data.\n72 bytes from 10.10.2.1: icmp_seq=1 ttl=64 time=6.70 ms\n72 bytes from 10.10.2.1: icmp_seq=2 ttl=64 time=0.165 ms\n72 bytes from 10.10.2.1: icmp_seq=3 ttl=64 time=0.175 ms\n72 bytes from 10.10.2.1: icmp_seq=4 ttl=64 time=0.158 ms\n72 byte"
+  }
+}

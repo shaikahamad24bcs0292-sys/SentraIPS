@@ -1,0 +1,11 @@
+{
+  "capture_id": "capture_icmp_03",
+  "vpn_mode": "tunnel",
+  "encryption": "AES-256-GCM",
+  "authentication": 12,
+  "dh_group": 19,
+  "dh_group_name": "ecp256",
+  "pfs": true,
+  "ip_version": "ipv4",
+  "traffic_type": "icmp"
+}

@@ -1,0 +1,46 @@
+================================================================================
+RFC 7296
+Internet Key Exchange Protocol Version 2 (IKEv2)
+Internet Engineering Task Force (IETF)
+================================================================================
+
+[Section 1.2: Exchange Types and Cleartext Negotiation]
+An IKEv2 communication consists of pairs of request and response messages. The initial
+exchanges are IKE_SA_INIT and IKE_AUTH.
+
+In the IKE_SA_INIT exchange, the peers negotiate cryptographic algorithms via Security
+Association (SA) proposals, exchange Diffie-Hellman public values in Key Exchange (KE)
+payloads, and exchange nonces (Ni, Nr). Because the IKE SA has not yet been established,
+the IKE_SA_INIT header and its payloads (SAi1, KEi, Ni, SAr1, KEr, Nr) are transmitted
+in cleartext unencrypted UDP datagrams (typically destination port 500 or 4500).
+
+Security Warning: Eavesdroppers on the transit path can passively observe the initiator
+and responder SPI values, supported cipher suites, Diffie-Hellman group identifiers, and
+exchange flags directly from outer message headers.
+
+[Section 2.1: Key Exchange (KE) Payload and Diffie-Hellman Groups]
+The Key Exchange (KE) payload contains the Diffie-Hellman public key of the sending
+entity. The DH Transform ID negotiated in the SA proposal dictates the length and mathematical
+group used for the exchange.
+
+If a weak or sub-2048-bit Diffie-Hellman group (such as Group 1, 2, or 5) is accepted,
+an adversary with sufficient computational resources can solve the discrete logarithm
+problem for the group, compute the shared secret (g^ir), derive SKEYSEED, and passively
+decrypt all subsequent encrypted IKE_AUTH payloads and session keys.
+
+[Section 2.14: Generating Keying Material for Child SAs (PFS Exchange)]
+When creating a Child SA (for ESP or AH data traffic), the keying material KEYMAT is
+derived from the existing IKE SA keys (SK_d) and new nonces.
+
+If Perfect Forward Secrecy (PFS) is desired, an additional ephemeral Diffie-Hellman
+exchange MUST be included in the CREATE_CHILD_SA exchange or during IKE_AUTH. If the
+Diffie-Hellman group transform is omitted from the Child SA proposal, KEYMAT is derived
+solely from SK_d without new DH math, meaning compromise of the initial IKE SA secret
+retroactively compromises all Child SA traffic.
+
+[Section 3.3: Security Association (SA) Payload and Transform Proposals]
+The SA payload contains a list of proposals, each consisting of transforms for Encryption
+(Type 1), Pseudorandom Function (Type 2), Integrity (Type 3), and Diffie-Hellman Group
+(Type 4). A proposal is accepted only if the responder supports an identical combination
+of transforms. Gateways MUST reject transform proposals containing deprecated algorithms
+such as DES, 3DES, MD5, or SHA-1.

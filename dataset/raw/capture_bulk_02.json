@@ -1,0 +1,11 @@
+{
+  "capture_id": "capture_bulk_02",
+  "vpn_mode": "tunnel",
+  "encryption": "AES-128-CBC",
+  "authentication": 12,
+  "dh_group": 14,
+  "dh_group_name": "modp2048",
+  "pfs": true,
+  "ip_version": "ipv4",
+  "traffic_type": "bulk"
+}

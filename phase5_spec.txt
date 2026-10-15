@@ -1,0 +1,167 @@
+PHASE 5 — RAG + EVIDENCE + REPORT GENERATION
+
+## Objective
+
+Continue from Phase 4.
+
+Build the explainability and reporting layer.
+
+The goal is:
+
+```text
+Security finding
+      ↓
+Relevant NIST/RFC evidence
+      ↓
+Evidence-linked recommendation
+      ↓
+LLM explanation
+      ↓
+Technical + Executive report
+```
+
+The IPsecIQ design specifically proposes RAG over standards such as NIST SP 800-77 Rev. 1, RFC 7296, RFC 4301 and RFC 8221.
+
+## Knowledge base
+
+Create:
+
+```text
+knowledge_base/
+├── nist/
+└── rfc/
+```
+
+Use the relevant standards documents that are legally/technically appropriate to store and process.
+
+At minimum target:
+
+```text
+NIST SP 800-77 Rev. 1
+RFC 7296
+RFC 4301
+RFC 8221
+```
+
+Do not invent standards passages.
+
+## RAG pipeline
+
+Implement:
+
+```text
+Finding
+ ↓
+Query generation
+ ↓
+Relevant evidence retrieval
+ ↓
+Evidence attached to finding
+```
+
+Use a simple vector store.
+
+Do not overcomplicate the first implementation with multiple agents.
+
+## Evidence object
+
+Create a structured object:
+
+```json
+{
+  "finding_id": "F001",
+  "finding": "PFS Disabled",
+  "observed_evidence": "PFS configuration observed from parsed IKE/SA information",
+  "rule_id": "PFS_DISABLED",
+  "risk_contribution": 20,
+  "references": [
+    {
+      "document": "NIST/RFC",
+      "section": "relevant section"
+    }
+  ]
+}
+```
+
+## LLM
+
+The LLM should only:
+
+* explain findings
+* summarize results
+* generate recommendations
+* create executive/technical language
+
+The LLM must NOT:
+
+* calculate risk
+* invent packet information
+* invent findings
+* override deterministic rules
+* invent references
+
+Provide structured findings to the LLM.
+
+## Executive report
+
+Generate:
+
+```text
+Executive Summary
+Overall Risk
+Major Findings
+Business/Operational Impact
+Priority Recommendations
+```
+
+## Technical report
+
+Generate:
+
+```text
+Capture Information
+VPN Configuration
+IKE Analysis
+ESP Analysis
+AI Traffic Inference
+Security Findings
+Risk Score
+Threat Matrix
+Evidence
+NIST/RFC References
+Recommendations
+AI Confidence
+Limitations
+```
+
+## PDF
+
+Implement:
+
+```text
+Generate PDF Report
+```
+
+Make the report visually professional.
+
+## Phase 5 acceptance criteria
+
+```text
+[ ] Knowledge base works
+[ ] RAG retrieves relevant evidence
+[ ] Findings contain evidence
+[ ] LLM receives structured data
+[ ] LLM does not calculate risk
+[ ] Executive report works
+[ ] Technical report works
+[ ] PDF export works
+[ ] References are traceable
+[ ] No fabricated evidence
+[ ] Tests pass
+```
+
+STOP after Phase 5.
+
+---
+
+# 

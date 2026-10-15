@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SentraIPS Security Assessment Report - audit_demo_capture_1791275883</title>
+  <style>
+    :root {
+      --primary: #1E293B;
+      --secondary: #3B82F6;
+      --accent: #0EA5E9;
+      --bg: #F8FAFC;
+      --card-bg: #FFFFFF;
+      --text: #0F172A;
+      --muted: #64748B;
+      --border: #E2E8F0;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      line-height: 1.5;
+      padding: 30px 20px;
+    }
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    .header {
+      background: linear-gradient(135deg, #0F172A 0%, #1E293B 100%);
+      color: #FFFFFF;
+      padding: 32px 40px;
+      border-radius: 12px;
+      margin-bottom: 28px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 20px;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    }
+    .header h1 { font-size: 26px; font-weight: 700; letter-spacing: -0.5px; }
+    .header .subtitle { color: #94A3B8; font-size: 14px; margin-top: 4px; }
+    .header-meta { text-align: right; font-size: 13px; color: #CBD5E1; }
+    .badge {
+      display: inline-block;
+      padding: 4px 10px;
+      border-radius: 9999px;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 20px;
+      margin-bottom: 28px;
+    }
+    .card {
+      background: var(--card-bg);
+      border-radius: 10px;
+      padding: 24px;
+      border: 1px solid var(--border);
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    }
+    .metric-title { font-size: 13px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; }
+    .metric-value { font-size: 32px; font-weight: 800; margin: 8px 0; }
+    .metric-sub { font-size: 13px; color: var(--muted); }
+    .section-title {
+      font-size: 20px;
+      font-weight: 700;
+      margin: 32px 0 16px 0;
+      color: var(--primary);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 16px 0;
+      font-size: 14px;
+      background: var(--card-bg);
+      border-radius: 8px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+    }
+    th {
+      background-color: #F1F5F9;
+      color: var(--primary);
+      text-align: left;
+      padding: 12px 16px;
+      font-weight: 600;
+      border-bottom: 1px solid var(--border);
+    }
+    td {
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--border);
+      vertical-align: top;
+    }
+    tr:last-child td { border-bottom: none; }
+    tr:hover td { background-color: #F8FAFC; }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      background: #F1F5F9;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 13px;
+      color: #0F172A;
+    }
+    .finding-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 24px;
+      margin-bottom: 18px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    }
+    .finding-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+      border-bottom: 1px solid #F1F5F9;
+      padding-bottom: 10px;
+    }
+    .finding-id { font-size: 13px; font-weight: 700; color: #4F46E5; background: #EEF2FF; padding: 2px 8px; border-radius: 4px; margin-right: 8px; }
+    .finding-title { font-size: 16px; font-weight: 700; color: var(--primary); }
+    .finding-desc { font-size: 14px; color: #334155; margin-bottom: 16px; }
+    .finding-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-bottom: 16px;
+    }
+    .snippet {
+      background: #F8FAFC;
+      border: 1px solid #E2E8F0;
+      padding: 10px 14px;
+      border-radius: 6px;
+      font-size: 13px;
+      font-family: monospace;
+      margin-top: 6px;
+    }
+    .impact-text { font-size: 13px; color: #475569; margin-top: 6px; }
+    .recommendation-box {
+      background: #ECFDF5;
+      border-left: 4px solid #10B981;
+      padding: 12px 16px;
+      border-radius: 4px;
+      font-size: 14px;
+      color: #065F46;
+    }
+    .refs-box {
+      background: #F8FAFC;
+      border: 1px solid #E2E8F0;
+      border-radius: 6px;
+      padding: 12px 16px;
+      margin-top: 14px;
+      font-size: 13px;
+      color: #334155;
+    }
+    .refs-box ul { padding-left: 18px; margin-top: 6px; }
+    .ref-snippet { font-size: 12px; color: #475569; margin-top: 4px; }
+    .prob-row { display: flex; align-items: center; gap: 12px; margin-bottom: 8px; font-size: 13px; }
+    .prob-label { width: 140px; font-weight: 600; color: #334155; }
+    .prob-bar-track { flex: 1; height: 12px; background: #E2E8F0; border-radius: 6px; overflow: hidden; }
+    .prob-bar-fill { height: 100%; background: #3B82F6; border-radius: 6px; }
+    .prob-val { width: 50px; text-align: right; color: #64748B; }
+    .limitations-box {
+      background: #FEF3C7;
+      border-left: 4px solid #F59E0B;
+      padding: 18px 24px;
+      border-radius: 8px;
+      color: #92400E;
+      font-size: 14px;
+    }
+    .limitations-box ul { padding-left: 20px; margin-top: 8px; }
+    .success-box { background: #DCFCE7; color: #166534; padding: 18px; border-radius: 8px; }
+    .subtext { font-size: 12px; color: var(--muted); }
+    .footer {
+      margin-top: 40px;
+      text-align: center;
+      font-size: 13px;
+      color: var(--muted);
+      border-top: 1px solid var(--border);
+      padding-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Header -->
+    <div class="header">
+      <div>
+        <h1>SentraIPS Security Assessment Audit</h1>
+        <div class="subtitle">AI-Driven IPsec VPN Cryptographic & Compliance Evaluation Platform</div>
+      </div>
+      <div class="header-meta">
+        <div><strong>Report ID:</strong> audit_demo_capture_1791275883</div>
+        <div><strong>Generated:</strong> 2026-10-06T08:38:03.893149+00:00</div>
+        <div style="margin-top: 4px;"><span class="badge" style="background:#334155; color:#F8FAFC;">CONFIDENTIAL AUDIT</span></div>
+      </div>
+    </div>
+
+    <!-- Executive Summary Grid -->
+    <div class="summary-grid">
+      <div class="card">
+        <div class="metric-title">Overall Risk Score</div>
+        <div class="metric-value" style="color: #16A34A;">15<span style="font-size: 18px; font-weight: 500; color: #94A3B8;"> / 100</span></div>
+        <div class="metric-sub"><span class="badge" style="background: #DCFCE7; color: #16A34A; font-weight: 700;">LOW</span> Rating</div>
+      </div>
+
+      <div class="card">
+        <div class="metric-title">Standards Compliance</div>
+        <div class="metric-value" style="font-size: 24px; color: #1E293B;">COMPLIANT</div>
+        <div class="metric-sub">6 Pass &bull; 0 Warnings &bull; 0 Fails</div>
+      </div>
+
+      <div class="card">
+        <div class="metric-title">Encrypted Traffic Inference</div>
+        <div class="metric-value" style="font-size: 26px; color: #2563EB;">Web</div>
+        <div class="metric-sub">Confidence: 100.0% via RandomForest</div>
+      </div>
+
+      <div class="card">
+        <div class="metric-title">Cryptographic Baseline</div>
+        <div style="margin: 8px 0; font-size: 14px;">
+          <div><strong>IKE:</strong> IKEv2</div>
+          <div><strong>Cipher:</strong> <code>AES-256-GCM</code></div>
+          <div><strong>DH:</strong> ecp256 (19) &bull; <strong>PFS:</strong> Unknown / Not Detected</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- VPN Configuration Table -->
+    <h2 class="section-title">1. Observed VPN Protocol Configuration</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Parameter</th>
+          <th>Detected Value</th>
+          <th>Observation Provenance</th>
+          <th>Standard Baseline Recommendation</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>VPN Mode</strong></td>
+          <td><code>tunnel</code></td>
+          <td><span class="badge" style="background:#F1F5F9; color:#475569;">OBSERVED</span></td>
+          <td>Tunnel Mode (Site-to-Site Gateways)</td>
+        </tr>
+        <tr>
+          <td><strong>IKE Version</strong></td>
+          <td><code>IKEv2</code></td>
+          <td><span class="badge" style="background:#F1F5F9; color:#475569;">OBSERVED</span></td>
+          <td>IKEv2 (RFC 7296)</td>
+        </tr>
+        <tr>
+          <td><strong>Symmetric Encryption</strong></td>
+          <td><code>AES-256-GCM</code></td>
+          <td><span class="badge" style="background:#F1F5F9; color:#475569;">OBSERVED</span></td>
+          <td>AES-256-GCM / AES-128-GCM (AEAD)</td>
+        </tr>
+        <tr>
+          <td><strong>Diffie-Hellman Group</strong></td>
+          <td><code>ecp256 (19)</code></td>
+          <td><span class="badge" style="background:#F1F5F9; color:#475569;">OBSERVED</span></td>
+          <td>Group 19 (ecp256) or Group 14 (modp2048)</td>
+        </tr>
+        <tr>
+          <td><strong>Perfect Forward Secrecy</strong></td>
+          <td><code>Unknown / Not Detected</code></td>
+          <td><span class="badge" style="background:#F1F5F9; color:#475569;">OBSERVED</span></td>
+          <td>Enabled (True)</td>
+        </tr>
+        <tr>
+          <td><strong>Authentication Suite</strong></td>
+          <td><code>12</code></td>
+          <td><span class="badge" style="background:#F1F5F9; color:#475569;">OBSERVED</span></td>
+          <td>SHA-256, SHA-384, or AEAD ICV</td>
+        </tr>
+        <tr>
+          <td><strong>Packet Accounting</strong></td>
+          <td>Total: 196 (IKE: 6, ESP: 190)</td>
+          <td><span class="badge" style="background:#F1F5F9; color:#475569;">OBSERVED</span></td>
+          <td>ESP > 0 for operational data payload</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- Traffic Analysis Section -->
+    <h2 class="section-title">2. Encrypted ESP Traffic Metadata Classification</h2>
+    <div class="card" style="margin-bottom: 24px;">
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 20px;">
+        <div><span class="subtext">Classified Profile:</span><div style="font-size: 20px; font-weight: 700; color: #2563EB;">Web</div></div>
+        <div><span class="subtext">Inference Confidence:</span><div style="font-size: 20px; font-weight: 700;">100.0%</div></div>
+        <div><span class="subtext">Observed Flow Duration:</span><div style="font-size: 20px; font-weight: 700;">2.13 s</div></div>
+        <div><span class="subtext">Mean Packet Size:</span><div style="font-size: 20px; font-weight: 700;">187.1 B</div></div>
+        <div><span class="subtext">Mean Inter-Arrival:</span><div style="font-size: 20px; font-weight: 700;">11.28 ms</div></div>
+        <div><span class="subtext">Flow Bursts:</span><div style="font-size: 20px; font-weight: 700;">15</div></div>
+      </div>
+      <h3 style="font-size: 14px; font-weight: 600; margin-bottom: 10px; color: var(--muted); text-transform: uppercase;">Class Probability Distribution (Random Forest)</h3>
+      
+                <div class='prob-row'>
+                  <span class='prob-label'>Web</span>
+                  <div class='prob-bar-track'><div class='prob-bar-fill' style='width: 100.0%;'></div></div>
+                  <span class='prob-val'>100.0%</span>
+                </div>
+                
+                <div class='prob-row'>
+                  <span class='prob-label'>Bulk/Data Transfer</span>
+                  <div class='prob-bar-track'><div class='prob-bar-fill' style='width: 0.0%;'></div></div>
+                  <span class='prob-val'>0.0%</span>
+                </div>
+                
+                <div class='prob-row'>
+                  <span class='prob-label'>ICMP</span>
+                  <div class='prob-bar-track'><div class='prob-bar-fill' style='width: 0.0%;'></div></div>
+                  <span class='prob-val'>0.0%</span>
+                </div>
+                
+                <div class='prob-row'>
+                  <span class='prob-label'>Video</span>
+                  <div class='prob-bar-track'><div class='prob-bar-fill' style='width: 0.0%;'></div></div>
+                  <span class='prob-val'>0.0%</span>
+                </div>
+                
+                <div class='prob-row'>
+                  <span class='prob-label'>VoIP</span>
+                  <div class='prob-bar-track'><div class='prob-bar-fill' style='width: 0.0%;'></div></div>
+                  <span class='prob-val'>0.0%</span>
+                </div>
+                
+    </div>
+
+    <!-- Security Findings Section -->
+    <h2 class="section-title">3. Deterministic Security Findings & Threat Analysis</h2>
+    
+                <div class='finding-card'>
+                  <div class='finding-header'>
+                    <div>
+                      <span class='finding-id'>VPN-001</span>
+                      <span class='finding-title'>Traffic Analysis &amp; Flow Pattern Exposure</span>
+                    </div>
+                    <span class='badge' style='background:#DCFCE7; color:#16A34A; font-weight:700;'>LOW</span>
+                  </div>
+                  <p class='finding-desc'>Even with strong encryption, packet size distributions, burst dynamics, and inter-arrival timing remain visible to network eavesdroppers, allowing application profiling (e.g. identifying VoIP vs Web vs Video).</p>
+                  
+                  <div class='finding-grid'>
+                    <div class='finding-item'>
+                      <strong>Evidence Observed</strong>
+                      <div class='snippet'><strong>observed_field</strong>: esp_packets<br><strong>observed_value</strong>: 190 packets<br><strong>packet_source</strong>: Outer IP/ESP packet headers and inter-arrival timestamps<br><strong>rule_criterion</strong>: Traffic flow confidentiality (TFC) padding (RFC 4303)<br><strong>esp_packets</strong>: 190</div>
+                    </div>
+                    <div class='finding-item'>
+                      <strong>Threat & Impact</strong>
+                      <div class='impact-text'>Passive observers can profile application traffic types (VoIP, video, file transfers) from timing and packet sizes.</div>
+                    </div>
+                  </div>
+
+                  <div class='recommendation-box'>
+                    <strong>Remediation:</strong> Consider implementing IPsec traffic flow confidentiality (TFC) padding (RFC 4303) to mask packet sizes and timing characteristics.
+                  </div>
+                  
+                </div>
+                
+                <div class='finding-card'>
+                  <div class='finding-header'>
+                    <div>
+                      <span class='finding-id'>VPN-002</span>
+                      <span class='finding-title'>Cleartext IKE Handshake Metadata</span>
+                    </div>
+                    <span class='badge' style='background:#DCFCE7; color:#16A34A; font-weight:700;'>LOW</span>
+                  </div>
+                  <p class='finding-desc'>The initial IKE_SA_INIT exchange exposes initiator and responder Security Parameter Indexes (SPIs) and cryptographic negotiation proposals in cleartext.</p>
+                  
+                  <div class='finding-grid'>
+                    <div class='finding-item'>
+                      <strong>Evidence Observed</strong>
+                      <div class='snippet'><strong>observed_field</strong>: ike_packets<br><strong>observed_value</strong>: 6 IKE packets<br><strong>packet_source</strong>: IKE_SA_INIT message headers (UDP 500/4500)<br><strong>rule_criterion</strong>: IKEv2 cleartext handshake visibility (RFC 7296)<br><strong>ike_packets</strong>: 6</div>
+                    </div>
+                    <div class='finding-item'>
+                      <strong>Threat & Impact</strong>
+                      <div class='impact-text'>External network observers learn gateway identity and supported cryptographic suites from initial negotiation.</div>
+                    </div>
+                  </div>
+
+                  <div class='recommendation-box'>
+                    <strong>Remediation:</strong> This is an unavoidable architectural aspect of IKEv2 negotiation. Ensure gateway external IP addresses are protected behind border firewalls.
+                  </div>
+                  
+                </div>
+                
+
+    <!-- Compliance Section -->
+    <h2 class="section-title">4. Compliance & Best Practice Matrix (NIST & RFC Baseline)</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Control ID</th>
+          <th>Control Title & Category</th>
+          <th>Status</th>
+          <th>Observed Value</th>
+          <th>Standard Baseline</th>
+          <th>Findings & Standards Citation</th>
+        </tr>
+      </thead>
+      <tbody>
+        
+            <tr>
+              <td><code>COMP-ENC-01</code></td>
+              <td><strong>Symmetric Encryption Algorithm</strong><div class='subtext'>Cryptography</div></td>
+              <td><span class='badge' style='background:#DCFCE7; color:#16A34A;'>PASS</span></td>
+              <td><code>AES-256-GCM</code></td>
+              <td>AES-256-GCM or AES-128-GCM (AEAD)</td>
+              <td>Complies with NIST SP 800-77 Rev. 1 Table 4-1 and RFC 8221 MUST requirements.<div class='ref-snippet'><strong>NIST SP 800-77 Rev. 1</strong>: AES-256-GCM (RFC 4106) provides optimal confidentiality and performance with 256 bits of cryptographic strength.<br><strong>RFC 8221</strong>: AES-128-GCM and AES-256-GCM are standard MUST implement suites.</div></td>
+            </tr>
+            
+            <tr>
+              <td><code>COMP-DH-01</code></td>
+              <td><strong>Diffie-Hellman Key Exchange Group</strong><div class='subtext'>Key Exchange</div></td>
+              <td><span class='badge' style='background:#DCFCE7; color:#16A34A;'>PASS</span></td>
+              <td><code>Group 19 (ecp256)</code></td>
+              <td>Group 19 (ecp256), Group 20 (ecp384), or Group 14 (modp2048)</td>
+              <td>Complies with RFC 8247 MUST/RECOMMENDED requirements and NIST SP 800-77 Section 4.3 guidance.<div class='ref-snippet'><strong>NIST SP 800-77 Rev. 1</strong>: Group 19 (ecp256) and Group 20 (ecp384) provide superior cryptographic security margin and computational efficiency.<br><strong>RFC 8247</strong>: Group 19 (256-bit Random ECP) is RECOMMENDED; Group 14 (2048-bit MODP) is MUST.</div></td>
+            </tr>
+            
+            <tr>
+              <td><code>COMP-PFS-01</code></td>
+              <td><strong>Perfect Forward Secrecy (PFS)</strong><div class='subtext'>Key Management</div></td>
+              <td><span class='badge' style='background:#EEF2FF; color:#4F46E5;'>UNKNOWN</span></td>
+              <td><code>Unknown / Not Detected</code></td>
+              <td>Enabled for all Child SAs</td>
+              <td>Child SA renegotiation exchange was not observed in capture.</td>
+            </tr>
+            
+            <tr>
+              <td><code>COMP-IKE-01</code></td>
+              <td><strong>IKE Protocol Version</strong><div class='subtext'>Key Management</div></td>
+              <td><span class='badge' style='background:#DCFCE7; color:#16A34A;'>PASS</span></td>
+              <td><code>IKEv2 (RFC 7296)</code></td>
+              <td>IKEv2 (RFC 7296)</td>
+              <td>Complies with RFC 7296 and NIST SP 800-77 recommendations.<div class='ref-snippet'><strong>RFC 7296</strong>: IKEv2 is the standard protocol for performing mutual authentication and establishing Security Associations for IPsec.</div></td>
+            </tr>
+            
+            <tr>
+              <td><code>COMP-AUTH-01</code></td>
+              <td><strong>Integrity / Authentication Algorithm</strong><div class='subtext'>Integrity</div></td>
+              <td><span class='badge' style='background:#DCFCE7; color:#16A34A;'>PASS</span></td>
+              <td><code>SHA-256 (IANA ID 12)</code></td>
+              <td>SHA-256, SHA-384, or AEAD ICV</td>
+              <td>Complies with RFC 8247 Section 2.3 MUST requirements.</td>
+            </tr>
+            
+            <tr>
+              <td><code>COMP-MODE-01</code></td>
+              <td><strong>VPN Encapsulation Architecture</strong><div class='subtext'>Architecture</div></td>
+              <td><span class='badge' style='background:#DCFCE7; color:#16A34A;'>PASS</span></td>
+              <td><code>Tunnel Mode (Site-to-Site / Gateway)</code></td>
+              <td>Tunnel Mode for Gateway-to-Gateway</td>
+              <td>Complies with RFC 4301 Section 4.1 gateway encapsulation requirements.<div class='ref-snippet'><strong>RFC 4301</strong>: Tunnel mode encapsulates the inner IP datagram completely, hiding inner subnet topology and host addresses from transit networks.</div></td>
+            </tr>
+            
+            <tr>
+              <td><code>COMP-ESP-01</code></td>
+              <td><strong>ESP Protocol Progression &amp; Header Integrity</strong><div class='subtext'>Tunnel Integrity</div></td>
+              <td><span class='badge' style='background:#DCFCE7; color:#16A34A;'>PASS</span></td>
+              <td><code>190 ESP packets with valid SPI progression</code></td>
+              <td>Valid SPI and active anti-replay progression</td>
+              <td>Observed ESP packets demonstrate healthy sequence progression and non-zero SPI values.</td>
+            </tr>
+            
+      </tbody>
+    </table>
+
+    <!-- Recommendations Section -->
+    <h2 class="section-title">5. Prioritized Remediation Roadmap</h2>
+    <table>
+      <thead>
+        <tr>
+          <th style="width: 120px;">Priority</th>
+          <th>Recommendation Title</th>
+          <th>Remedial Action</th>
+          <th>Target Parameter</th>
+        </tr>
+      </thead>
+      <tbody>
+        
+            <tr>
+              <td><span class='badge' style='background:#DCFCE7; color:#16A34A; font-weight:700;'>LOW</span></td>
+              <td><strong>Remediate: Traffic Analysis &amp; Flow Pattern Exposure</strong></td>
+              <td>Evaluate IPsec Traffic Flow Confidentiality (TFC) padding (RFC 4303) if packet size profiling is a threat.</td>
+              <td><code>Metadata Exposure</code></td>
+            </tr>
+            
+            <tr>
+              <td><span class='badge' style='background:#DCFCE7; color:#16A34A; font-weight:700;'>LOW</span></td>
+              <td><strong>Remediate: Cleartext IKE Handshake Metadata</strong></td>
+              <td>This is an unavoidable architectural aspect of IKEv2 negotiation. Ensure gateway external IP addresses are protected behind border firewalls.</td>
+              <td><code>Metadata Exposure</code></td>
+            </tr>
+            
+      </tbody>
+    </table>
+
+    <!-- Limitations Section -->
+    <h2 class="section-title">6. Audit Limitations & Security Boundaries</h2>
+    <div class="limitations-box">
+      <strong>Important Disclaimers & Cryptographic Isolation:</strong>
+      <ul>
+        <li>ESP payload contents are fully encrypted; analysis is strictly limited to observable outer packet headers, SPI metadata, and sequence progression.</li><li>Rekeyed Child SA transform attributes negotiated inside encrypted IKE_AUTH or CREATE_CHILD_SA payloads cannot be observed without decryption keys.</li><li>Encrypted ESP payload contents were never decrypted; all analysis is derived strictly from outer packet headers and inter-arrival timing.</li><li>ML traffic classification represents a probabilistic inference based on observed outer packet size and burst distributions, not deterministic payload inspection.</li>
+      </ul>
+    </div>
+
+    <div class="footer">
+      Generated automatically by <strong>SentraIPS</strong> &bull; Smart India Hackathon 2026 Prototype &bull; Zero Decryption Architecture
+    </div>
+  </div>
+</body>
+</html>

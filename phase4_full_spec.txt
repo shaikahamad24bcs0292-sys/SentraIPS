@@ -1,0 +1,187 @@
+PHASE 4 — ESP AI ENSEMBLE + UNCERTAINTY
+
+## Objective
+
+Continue from Phase 3.
+
+Now implement the main AI innovation of IPsecIQ:
+
+```text
+Encrypted ESP metadata
+        ↓
+       ┌───────────────┐
+       │               │
+     1D-CNN        Random Forest / GBM
+       │               │
+       └───────┬───────┘
+               ↓
+        Agreement check
+          /          \
+       YES            NO
+        ↓              ↓
+ Classification     UNCERTAIN
+        ↓              ↓
+ Confidence       Investigation
+```
+
+The IPsecIQ design uses a 1D-CNN plus an independent statistical model and explicitly treats model disagreement as uncertainty rather than forcing a label.
+
+## Core traffic classes
+
+Initially use only:
+
+```text
+Web
+VoIP
+ICMP
+Video
+```
+
+Do not add many traffic classes until the core classifier works.
+
+## Features
+
+Use Phase 2 features:
+
+```text
+packet size
+inter-arrival time
+direction
+packet sequence
+flow duration
+traffic volume
+burst statistics
+packet-size statistics
+```
+
+## Model 1 — 1D-CNN
+
+Build a lightweight temporal model.
+
+Input:
+
+```text
+ESP packet feature sequence
+```
+
+Output:
+
+```text
+traffic class probabilities
+```
+
+Do not make the model unnecessarily large.
+
+## Model 2 — Statistical model
+
+Use:
+
+```text
+Random Forest
+```
+
+or:
+
+```text
+Gradient Boosting
+```
+
+Do not implement Random Forest, XGBoost, LightGBM and several other models simultaneously unless there is a real evaluation reason.
+
+## Ensemble
+
+Create:
+
+```text
+ensemble.py
+```
+
+Return:
+
+```json
+{
+  "cnn_prediction": "VoIP",
+  "cnn_confidence": 0.87,
+  "statistical_prediction": "VoIP",
+  "statistical_confidence": 0.81,
+  "agreement": true,
+  "final_prediction": "VoIP",
+  "final_confidence": 0.84,
+  "status": "classified"
+}
+```
+
+If disagreement:
+
+```json
+{
+  "cnn_prediction": "VoIP",
+  "statistical_prediction": "Video",
+  "agreement": false,
+  "final_prediction": "UNCERTAIN",
+  "status": "investigation_required"
+}
+```
+
+## IMPORTANT
+
+Do not claim that disagreement automatically means malicious traffic.
+
+It means:
+
+```text
+The model is uncertain.
+```
+
+That is an analyst signal, not proof of an attack.
+
+## Training/evaluation
+
+Use configuration/session-level splitting to reduce leakage.
+
+Calculate:
+
+```text
+accuracy
+precision
+recall
+F1
+confusion matrix
+model agreement rate
+```
+
+Clearly distinguish:
+
+```text
+Measured result
+Demo result
+Not evaluated
+```
+
+Never fabricate metrics.
+
+## Phase 4 acceptance criteria
+
+```text
+[ ] ESP feature pipeline works
+[ ] 1D-CNN works
+[ ] Statistical model works
+[ ] Both models produce independent predictions
+[ ] Agreement is calculated
+[ ] Confidence is displayed
+[ ] Disagreement produces UNCERTAIN
+[ ] No fake accuracy is displayed
+[ ] Evaluation metrics are calculated when models are trained
+[ ] Tests pass
+```
+
+Create three demo scenarios:
+
+```text
+1. Agreement → VoIP
+2. Agreement → Web
+3. Disagreement → UNCERTAIN
+```
+
+STOP after Phase 4.
+

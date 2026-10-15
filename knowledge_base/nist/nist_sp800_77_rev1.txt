@@ -1,0 +1,60 @@
+================================================================================
+NIST Special Publication 800-77 Revision 1
+Guide to IPsec VPNs
+National Institute of Standards and Technology (NIST)
+================================================================================
+
+[Section 3.1: Cryptographic Algorithms for IPsec]
+NIST recommends the use of Authenticated Encryption with Associated Data (AEAD)
+ciphers for all IPsec communications. Advanced Encryption Standard in Galois/Counter
+Mode (AES-GCM) with 128-bit or 256-bit keys (AES-128-GCM and AES-256-GCM) is strongly
+recommended for both IKEv2 and ESP payloads.
+
+Legacy symmetric block ciphers operating in Cipher Block Chaining (CBC) mode, such as
+AES-CBC or 3DES-CBC, require separate integrity algorithms (e.g., HMAC-SHA-256) and are
+susceptible to padding oracle vulnerabilities if improperly validated. Non-AEAD modes
+SHOULD be transitioned to AEAD ciphers wherever possible. Unauthenticated encryption
+modes or ciphers with key lengths under 128 bits MUST NOT be deployed.
+
+[Section 3.2: Diffie-Hellman Key Exchange Groups]
+Key establishment security depends on the mathematical strength of the Diffie-Hellman
+(DH) group selected during IKE negotiation. Agencies MUST use Diffie-Hellman groups
+that provide at least 112 bits of equivalent security strength, with 128 bits or higher
+strongly recommended for sensitive communications.
+
+Approved Diffie-Hellman groups:
+- Group 14: 2048-bit Modular Exponential (MODP) Group (minimum acceptable for legacy MODP)
+- Group 15: 3072-bit MODP Group
+- Group 16: 4096-bit MODP Group
+- Group 19: 256-bit Random Elliptic Curve (ecp256 / NIST P-256) (Recommended)
+- Group 20: 384-bit Random Elliptic Curve (ecp384 / NIST P-384) (Recommended)
+
+Deprecated and Insecure Diffie-Hellman groups:
+- Group 1 (768-bit MODP): INSECURE. MUST NOT be used.
+- Group 2 (1024-bit MODP): INSECURE. Broken under modern cryptanalysis. MUST NOT be used.
+- Group 5 (1536-bit MODP): LEGACY / INSUFFICIENT. Provides under 100 bits of security strength.
+Agencies MUST transition away from DH Group 5 to Group 14 or Elliptic Curve Group 19.
+
+[Section 3.3: Perfect Forward Secrecy (PFS)]
+Perfect Forward Secrecy (PFS) ensures that the compromise of long-term gateway private
+keys or IKE SA master keys does not compromise previously recorded session traffic.
+When PFS is enabled, an independent ephemeral Diffie-Hellman key exchange is performed
+during the creation and rekeying of each Child Security Association (Child SA).
+
+NIST SP 800-77 Rev. 1 mandates that IPsec gateways MUST enable Perfect Forward Secrecy
+(PFS) for all Child SAs in high-security and enterprise VPN deployments. Deployments
+operating with PFS disabled are vulnerable to retroactive decryption if the long-term
+private key or IKE SA keys are later obtained by an adversary.
+
+[Section 3.4: IKE Protocol Versions and Authentication]
+Agencies MUST migrate all IPsec VPNs to Internet Key Exchange Protocol Version 2 (IKEv2,
+RFC 7296). IKEv1 is deprecated due to structural weaknesses, high handshake latency,
+and susceptibility to offline dictionary attacks during aggressive mode negotiation.
+IKEv2 provides improved resilience against denial-of-service (DoS) attacks, native NAT
+traversal support, simplified rekeying, and robust certificate authentication.
+
+[Section 3.5: Traffic Flow Confidentiality (TFC)]
+To mitigate side-channel traffic analysis where eavesdroppers infer application behavior
+or data volume from packet sizes and timings, IPsec gateways SHOULD implement Traffic
+Flow Confidentiality (TFC) padding as specified in RFC 4303. Adding randomized padding
+masks packet size distributions and resists passive machine learning classification.

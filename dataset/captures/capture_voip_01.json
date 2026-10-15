@@ -1,0 +1,28 @@
+{
+  "capture_id": "capture_voip_01",
+  "vpn_mode": "tunnel",
+  "ip_version": "ipv4",
+  "encryption": "AES-256-GCM",
+  "pfs": true,
+  "dh_group": 19,
+  "dh_group_name": "ecp256",
+  "traffic_type": "voip",
+  "ike_proposal": "aes256gcm16-sha256-ecp256,aes256-sha256-ecp256",
+  "esp_proposal": "aes256gcm16-ecp256!",
+  "timestamp": "2026-09-17T05:48:21Z",
+  "packet_count": 106,
+  "ike_packets": 6,
+  "esp_packets": 100,
+  "file_path": "dataset\\captures\\capture_voip_01.pcap",
+  "file_size_bytes": 31028,
+  "tunnel_established": true,
+  "traffic_generation_result": {
+    "traffic_type": "voip",
+    "target_ip": "10.10.2.1",
+    "port": 5004,
+    "packets_sent": 50,
+    "packets_received": 50,
+    "duration_seconds": 1.0272960662841797,
+    "success": true
+  }
+}

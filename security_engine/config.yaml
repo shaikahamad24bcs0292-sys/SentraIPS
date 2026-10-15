@@ -1,0 +1,114 @@
+# SentraIPS Deterministic Security Engine Configuration
+# Defines scoring weights, severity thresholds, and cryptographic evaluation baselines.
+# Compliant with NIST SP 800-77 Rev. 1, RFC 7296 (IKEv2), RFC 8221 (ESP Cryptography), and RFC 4301.
+
+scoring:
+  min_score: 0
+  max_score: 100
+  thresholds:
+    low: [0, 24]
+    low_medium: [25, 49]
+    medium: [50, 74]
+    high: [75, 89]
+    critical: [90, 100]
+
+rules:
+  # =========================================================================
+  # 1. Cryptography Rules
+  # =========================================================================
+  CRYPTO_WEAK_CIPHER:
+    name: "Weak or Insecure Encryption Cipher"
+    category: "Cryptography"
+    severity: "CRITICAL"
+    weight: 30
+    description: "The VPN is using broken or obsolete ciphers (e.g. DES, 3DES, Blowfish, RC4, NULL) susceptible to cryptanalytic attacks."
+    recommendation: "Immediately migrate to modern AEAD ciphers such as AES-256-GCM or ChaCha20-Poly1305."
+
+  CRYPTO_LEGACY_NON_AEAD:
+    name: "Legacy Non-AEAD Cipher Mode (CBC)"
+    category: "Cryptography"
+    severity: "MEDIUM"
+    weight: 20
+    description: "The VPN uses CBC mode (e.g., AES-CBC) rather than modern Authenticated Encryption with Associated Data (AEAD). CBC mode is vulnerable to padding oracle attacks if integrity verification fails."
+    recommendation: "Upgrade encryption suite to an AEAD mode such as AES-256-GCM or AES-128-GCM to ensure atomic confidentiality and authenticity."
+
+  CRYPTO_INSUFFICIENT_KEY_LENGTH:
+    name: "Insufficient Cipher Key Length"
+    category: "Cryptography"
+    severity: "HIGH"
+    weight: 20
+    description: "The encryption key length is below the modern minimum baseline of 128 bits (or below 256 bits for high-assurance classifications)."
+    recommendation: "Increase key length to 256 bits (e.g., AES-256-GCM) to ensure post-quantum resistance and long-term security."
+
+  CRYPTO_WEAK_INTEGRITY:
+    name: "Weak Message Authentication / Integrity Algorithm"
+    category: "Cryptography"
+    severity: "HIGH"
+    weight: 20
+    description: "The IKE or ESP integrity algorithm uses deprecated hash functions such as MD5 or SHA-1."
+    recommendation: "Upgrade integrity algorithm to HMAC-SHA-256, HMAC-SHA-384, or use AEAD ciphers which eliminate separate integrity hashes."
+
+  # =========================================================================
+  # 2. Key Exchange & Diffie-Hellman Rules
+  # =========================================================================
+  DH_GROUP_INSECURE:
+    name: "Insecure / Obsolete Diffie-Hellman Group"
+    category: "Key Exchange"
+    severity: "CRITICAL"
+    weight: 25
+    description: "Diffie-Hellman group key size is below 2048 bits (e.g. Group 1: 768-bit MODP or Group 2: 1024-bit MODP), which can be broken by modern adversaries."
+    recommendation: "Enforce Diffie-Hellman Group 19 (NIST P-256), Group 20 (NIST P-384), or Group 14 (2048-bit MODP minimum)."
+
+  DH_GROUP_LEGACY:
+    name: "Legacy Diffie-Hellman Group (Sub-2048 bit)"
+    category: "Key Exchange"
+    severity: "MEDIUM"
+    weight: 20
+    description: "The DH group used (e.g. Group 5: 1536-bit MODP) is deprecated by NIST SP 800-77 Rev. 1 as having inadequate security margin."
+    recommendation: "Migrate key exchange to Elliptic Curve groups (DH Group 19: ecp256 or Group 20: ecp384) or DH Group 14 (modp2048)."
+
+  PFS_DISABLED:
+    name: "Perfect Forward Secrecy (PFS) Disabled"
+    category: "Key Exchange"
+    severity: "MEDIUM"
+    weight: 20
+    description: "Perfect Forward Secrecy is disabled for Child SAs. If the long-term private key or IKE SA master key is ever compromised, all previously recorded session traffic can be retroactively decrypted."
+    recommendation: "Enable Perfect Forward Secrecy (PFS) in the ESP Child SA configuration (e.g., specify esp=aes256gcm16-ecp256!)."
+
+  # =========================================================================
+  # 3. Protocol & SA Configuration Rules
+  # =========================================================================
+  IKE_VERSION_DEPRECATED:
+    name: "Deprecated IKE Protocol Version (IKEv1)"
+    category: "Protocol & SA"
+    severity: "HIGH"
+    weight: 20
+    description: "IKEv1 is legacy and lacks robust DoS protection, modern cryptographic negotiation, and native EAP/NAT-T support."
+    recommendation: "Upgrade IPsec tunnel configuration to use IKEv2 (RFC 7296)."
+
+  REPLAY_PROTECTION_ANOMALY:
+    name: "ESP Replay Protection Anomaly"
+    category: "Protocol & SA"
+    severity: "HIGH"
+    weight: 15
+    description: "Observed duplicate sequence numbers or non-monotonic sequence progression in ESP traffic indicating possible replay or retransmission failure."
+    recommendation: "Verify anti-replay window settings and ensure Extended Sequence Numbers (ESN) are enabled for high-bandwidth links."
+
+  # =========================================================================
+  # 4. Metadata Exposure Rules
+  # =========================================================================
+  METADATA_EXPOSURE_FLOW_INFERENCE:
+    name: "Traffic Analysis & Flow Pattern Exposure"
+    category: "Metadata Exposure"
+    severity: "LOW"
+    weight: 10
+    description: "Even with strong encryption, packet size distributions, burst dynamics, and inter-arrival timing remain visible to network eavesdroppers, allowing application profiling (e.g. identifying VoIP vs Web vs Video)."
+    recommendation: "Consider implementing IPsec traffic flow confidentiality (TFC) padding (RFC 4303) to mask packet sizes and timing characteristics."
+
+  METADATA_EXPOSURE_PLAINTEXT_IKE_HEADERS:
+    name: "Cleartext IKE Handshake Metadata"
+    category: "Metadata Exposure"
+    severity: "LOW"
+    weight: 5
+    description: "The initial IKE_SA_INIT exchange exposes initiator and responder Security Parameter Indexes (SPIs) and cryptographic negotiation proposals in cleartext."
+    recommendation: "This is an unavoidable architectural aspect of IKEv2 negotiation. Ensure gateway external IP addresses are protected behind border firewalls."

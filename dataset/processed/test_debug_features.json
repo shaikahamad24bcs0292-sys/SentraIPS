@@ -1,0 +1,219 @@
+{
+  "capture_id": "test_debug",
+  "pcap_file": "test_debug.pcap",
+  "summary": {
+    "capture_id": "test_debug",
+    "filename": "test_debug.pcap",
+    "file_size_bytes": 4096,
+    "is_valid": true,
+    "ipsec_detected": true,
+    "ike_detected": true,
+    "esp_detected": false,
+    "ah_detected": false,
+    "total_packets": 7,
+    "ike_packets": 7,
+    "esp_packets": 0,
+    "ah_packets": 0,
+    "non_ipsec_packets": 0,
+    "protocols_detected": [
+      "IKE (UDP 500/4500)"
+    ],
+    "ike": {
+      "detected": true,
+      "version": "IKEv2",
+      "initiator_spi": "0x758fce779b7b0467",
+      "responder_spi": "Unknown / Not Detected",
+      "initiator_endpoint": "172.28.0.10:500",
+      "responder_endpoint": "172.28.0.20:500",
+      "encryption": "AES-256-GCM",
+      "encryption_key_length": 256,
+      "authentication": "12",
+      "prf": "5",
+      "dh_group": 19,
+      "dh_group_name": "ecp256",
+      "pfs": "Unknown / Not Detected",
+      "packet_count": 7,
+      "exchange_types_observed": [
+        "IKE_SA_INIT"
+      ],
+      "proposals": [
+        {
+          "proposal_num": 1,
+          "protocol": "IKE",
+          "encryption": "AES-256-GCM",
+          "key_length": 256,
+          "integrity": "Unknown / Not Detected",
+          "prf": "5",
+          "dh_group": 19,
+          "dh_group_name": "ecp256"
+        },
+        {
+          "proposal_num": 2,
+          "protocol": "IKE",
+          "encryption": "AES-256-CBC",
+          "key_length": 256,
+          "integrity": "12",
+          "prf": "5",
+          "dh_group": 19,
+          "dh_group_name": "ecp256"
+        },
+        {
+          "proposal_num": 3,
+          "protocol": "IKE",
+          "encryption": "3DES-CBC",
+          "key_length": 168,
+          "integrity": "2",
+          "prf": "2",
+          "dh_group": 14,
+          "dh_group_name": "modp2048"
+        },
+        {
+          "proposal_num": 4,
+          "protocol": "IKE",
+          "encryption": "26",
+          "key_length": 256,
+          "integrity": "Unknown / Not Detected",
+          "prf": "2",
+          "dh_group": 14,
+          "dh_group_name": "modp2048"
+        },
+        {
+          "proposal_num": 1,
+          "protocol": "IKE",
+          "encryption": "AES-256-GCM",
+          "key_length": 256,
+          "integrity": "Unknown / Not Detected",
+          "prf": "5",
+          "dh_group": 19,
+          "dh_group_name": "ecp256"
+        },
+        {
+          "proposal_num": 2,
+          "protocol": "IKE",
+          "encryption": "AES-256-CBC",
+          "key_length": 256,
+          "integrity": "12",
+          "prf": "5",
+          "dh_group": 19,
+          "dh_group_name": "ecp256"
+        },
+        {
+          "proposal_num": 3,
+          "protocol": "IKE",
+          "encryption": "3DES-CBC",
+          "key_length": 168,
+          "integrity": "2",
+          "prf": "2",
+          "dh_group": 14,
+          "dh_group_name": "modp2048"
+        },
+        {
+          "proposal_num": 4,
+          "protocol": "IKE",
+          "encryption": "26",
+          "key_length": 256,
+          "integrity": "Unknown / Not Detected",
+          "prf": "2",
+          "dh_group": 14,
+          "dh_group_name": "modp2048"
+        },
+        {
+          "proposal_num": 1,
+          "protocol": "IKE",
+          "encryption": "AES-256-GCM",
+          "key_length": 256,
+          "integrity": "Unknown / Not Detected",
+          "prf": "5",
+          "dh_group": 19,
+          "dh_group_name": "ecp256"
+        },
+        {
+          "proposal_num": 2,
+          "protocol": "IKE",
+          "encryption": "AES-256-CBC",
+          "key_length": 256,
+          "integrity": "12",
+          "prf": "5",
+          "dh_group": 19,
+          "dh_group_name": "ecp256"
+        },
+        {
+          "proposal_num": 3,
+          "protocol": "IKE",
+          "encryption": "3DES-CBC",
+          "key_length": 168,
+          "integrity": "2",
+          "prf": "2",
+          "dh_group": 14,
+          "dh_group_name": "modp2048"
+        },
+        {
+          "proposal_num": 4,
+          "protocol": "IKE",
+          "encryption": "26",
+          "key_length": 256,
+          "integrity": "Unknown / Not Detected",
+          "prf": "2",
+          "dh_group": 14,
+          "dh_group_name": "modp2048"
+        },
+        {
+          "proposal_num": 1,
+          "protocol": "IKE",
+          "encryption": "AES-256-GCM",
+          "key_length": 256,
+          "integrity": "Unknown / Not Detected",
+          "prf": "5",
+          "dh_group": 19,
+          "dh_group_name": "ecp256"
+        }
+      ]
+    },
+    "esp": {
+      "detected": false,
+      "packet_count": 0,
+      "spis_observed": [],
+      "seq_min": null,
+      "seq_max": null,
+      "endpoints": [],
+      "total_bytes": 0
+    },
+    "features_extracted": false,
+    "ground_truth": null,
+    "errors": []
+  },
+  "features": {
+    "total_packets": 0,
+    "total_bytes": 0,
+    "forward_packets": 0,
+    "backward_packets": 0,
+    "forward_bytes": 0,
+    "backward_bytes": 0,
+    "packet_ratio_fwd_bwd": 0.0,
+    "byte_ratio_fwd_bwd": 0.0,
+    "flow_duration_sec": 0.0,
+    "packets_per_sec": 0.0,
+    "bytes_per_sec": 0.0,
+    "size_min": 0,
+    "size_max": 0,
+    "size_mean": 0.0,
+    "size_median": 0.0,
+    "size_std": 0.0,
+    "size_p25": 0.0,
+    "size_p75": 0.0,
+    "size_p90": 0.0,
+    "size_skewness": 0.0,
+    "iat_min_ms": 0.0,
+    "iat_max_ms": 0.0,
+    "iat_mean_ms": 0.0,
+    "iat_median_ms": 0.0,
+    "iat_std_ms": 0.0,
+    "burst_count": 0,
+    "mean_burst_size_pkts": 0.0,
+    "mean_burst_duration_ms": 0.0,
+    "mean_burst_bytes": 0.0,
+    "packet_size_sequence": [],
+    "iat_sequence_ms": [],
+    "direction_sequence": []
+  }
+}

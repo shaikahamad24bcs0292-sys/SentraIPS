@@ -1,0 +1,46 @@
+================================================================================
+RFC 4301
+Security Architecture for the Internet Protocol
+Internet Engineering Task Force (IETF)
+================================================================================
+
+[Section 4.4.1: Security Policy Database (SPD) and SA Selectors]
+The Security Policy Database (SPD) specifies the policies that determine the disposition
+of all IP traffic inbound or outbound from a host or security gateway. The SPD uses
+packet selectors (Source/Destination IP addresses, Protocol, Ports) to map packets to
+either DISCARD, BYPASS, or PROTECT actions.
+
+When PROTECT is specified, traffic is assigned to a Security Association (SA) that dictates
+the encryption suite, authentication algorithm, encapsulation mode (Tunnel or Transport),
+and SPI parameters.
+
+[Section 5.1: Encapsulating Security Payload (ESP) Protocol Mechanics]
+ESP (IP protocol 50) provides confidentiality, data origin authentication, connectionless
+integrity, anti-replay service, and limited traffic flow confidentiality.
+
+The ESP header precedes the encrypted payload and consists of:
+- Security Parameters Index (SPI): 32-bit arbitrary value identifying the SA.
+- Sequence Number: 32-bit monotonically increasing counter used for anti-replay protection.
+
+The encrypted payload, initialization vector (IV), padding, Pad Length, and Next Header
+fields follow the sequence number. If authentication is enabled, an Integrity Check
+Value (ICV) is appended to the packet.
+
+[Section 5.1.2: Anti-Replay Protection and Window Processing]
+ESP implementations MUST support the anti-replay service based on the 32-bit or Extended
+Sequence Number (ESN, 64-bit) field. An anti-replay sliding window (at least 64 packets wide)
+ensures that replayed or out-of-sequence packets beyond the window threshold are dropped
+without decryption processing, mitigating denial-of-service and replay injection attacks.
+
+[Section 5.2: Tunnel Mode vs. Transport Mode]
+In Tunnel Mode, the entire original IP datagram (including inner source and destination
+IP addresses) is encrypted inside the ESP payload, and a new outer IP header is attached.
+Tunnel mode is standard for site-to-site gateway VPNs. In Transport Mode, only the payload
+of the original IP packet (e.g., TCP or UDP) is encrypted, leaving the original IP headers
+exposed.
+
+[Section 8.0: Traffic Flow Confidentiality (TFC)]
+Because ESP in Tunnel mode conceals inner IP addresses and upper-layer protocols but leaves
+outer packet sizes and transmission timing visible, adversaries can perform passive traffic
+analysis. RFC 4301 specifies that implementations MAY transmit dummy packets and add variable
+length padding (TFC padding) to obscure packet lengths and burst intervals.

@@ -1,0 +1,46 @@
+================================================================================
+RFC 8221
+Cryptographic Algorithm Implementation Requirements and Usage Guidance
+for Encapsulating Security Payload (ESP) and Authentication Header (AH)
+Internet Engineering Task Force (IETF)
+================================================================================
+
+[Section 4: ESP Encryption and Authenticated Encryption Algorithms]
+This document updates the requirement levels for cryptographic algorithms used with ESP:
+
+MUST implement:
+- ENCR_AES_GCM_16 with 128-bit key (AEAD): Modern standard for high-throughput authenticated encryption.
+- ENCR_AES_GCM_16 with 256-bit key (AEAD): Strongly recommended for enterprise and government security.
+- ENCR_CHACHA20_POLY1305 (AEAD): Suitable for high-speed software cryptographic processing.
+
+SHOULD NOT implement / Deprecated:
+- ENCR_DES (56-bit): BROKEN. Insecure against brute-force attacks. MUST NOT be used.
+- ENCR_3DES_CBC: INSECURE due to Sweet32 64-bit block size collision vulnerabilities.
+- ENCR_BLOWFISH: Deprecated due to small block size vulnerabilities.
+- ENCR_NULL: Transmits unencrypted plaintext data. MUST NOT be used where confidentiality is required.
+
+Legacy / Transition:
+- ENCR_AES_CBC (128-bit or 256-bit): SHOULD+ level. While AES itself remains strong, CBC mode
+requires careful separate integrity verification and is non-AEAD. Transition to AES-GCM is advised.
+
+[Section 5: ESP Authentication and Integrity Algorithms]
+For non-AEAD ciphers requiring explicit authentication algorithms:
+
+MUST implement:
+- AUTH_HMAC_SHA2_256_128: Secure 256-bit SHA-2 integrity truncated to 128-bit ICV.
+
+MUST NOT implement:
+- AUTH_HMAC_MD5_96: Cryptographically broken due to collision vulnerabilities.
+- AUTH_HMAC_SHA1_96: Deprecated for security-sensitive applications due to theoretical collisions.
+
+[Section 6: Diffie-Hellman Group Requirements for IKEv2]
+The strength of IKEv2 and subsequent ESP keys is bounded by the DH group:
+
+MUST implement:
+- Group 14 (2048-bit MODP): Minimum required baseline for modular exponential key exchange.
+- Group 19 (256-bit Random ECP): Standard elliptic curve key exchange (ecp256).
+
+SHOULD NOT / Deprecated:
+- Group 1 (768-bit MODP): Insecure.
+- Group 2 (1024-bit MODP): Insecure.
+- Group 5 (1536-bit MODP): Insufficient security margin (<100 bits equivalent strength).

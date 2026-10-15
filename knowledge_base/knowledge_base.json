@@ -1,0 +1,299 @@
+{
+  "version": "1.0.0",
+  "last_updated": "2026-10-06",
+  "description": "Authoritative machine-readable knowledge base for IPsec VPN security, compliance baselines, and RFC/NIST standards mapping.",
+  "rules": [
+    {
+      "id": "VPN-ENC-001",
+      "category": "Cryptography",
+      "condition": "insecure_cipher",
+      "severity": "CRITICAL",
+      "title": "Insecure or Deprecated Cipher Algorithm",
+      "description": "The VPN configuration utilizes a legacy, weak, or deprecated cipher algorithm (e.g., DES, 3DES, Blowfish, RC4, or NULL encryption). These algorithms do not provide adequate confidentiality against modern cryptanalytic attacks.",
+      "recommendation": "Immediately migrate to a modern Authenticated Encryption with Associated Data (AEAD) cipher suite, such as AES-256-GCM or AES-128-GCM.",
+      "references": [
+        {
+          "source": "NIST SP 800-77 Rev. 1",
+          "section": "Section 4.2",
+          "title": "IPsec Cryptographic Algorithms",
+          "guidance": "Single DES and Triple DES (3DES) are disallowed for Federal applications. Modern deployments must adopt AES-GCM (RFC 4106) with 128-bit or 256-bit keys."
+        },
+        {
+          "source": "RFC 8221",
+          "section": "Section 3",
+          "title": "ESP Encryption Algorithms",
+          "guidance": "DES is MUST NOT; Triple-DES (3DES) is NOT RECOMMENDED; NULL encryption is NOT RECOMMENDED without authentication."
+        }
+      ]
+    },
+    {
+      "id": "VPN-ENC-002",
+      "category": "Cryptography",
+      "condition": "legacy_non_aead_cipher",
+      "severity": "MEDIUM",
+      "title": "Legacy Non-AEAD Cipher Mode (CBC)",
+      "description": "The VPN tunnel uses Cipher Block Chaining (CBC) mode (e.g., AES-CBC) rather than Authenticated Encryption with Associated Data (AEAD). CBC mode requires separate integrity checks and is historically susceptible to padding oracle attacks.",
+      "recommendation": "Upgrade tunnel transform proposals to authenticated encryption (AES-256-GCM or AES-128-GCM) where supported by peers.",
+      "references": [
+        {
+          "source": "NIST SP 800-77 Rev. 1",
+          "section": "Section 4.2.1",
+          "title": "AEAD Cipher Suites",
+          "guidance": "NIST strongly recommends AEAD algorithms (AES-GCM) over combined encryption-plus-authentication suites (AES-CBC + HMAC)."
+        },
+        {
+          "source": "RFC 8221",
+          "section": "Section 3",
+          "title": "ESP Encryption Algorithms",
+          "guidance": "AES-128-GCM and AES-256-GCM are MUST; AES-128-CBC is MAY for backward compatibility only."
+        }
+      ]
+    },
+    {
+      "id": "VPN-ENC-003",
+      "category": "Cryptography",
+      "condition": "recommended_aead_cipher",
+      "severity": "INFO",
+      "title": "Modern Authenticated Encryption (AEAD)",
+      "description": "The VPN tunnel employs a modern Authenticated Encryption with Associated Data suite (AES-256-GCM or AES-128-GCM), providing both strong payload confidentiality and authenticated ciphertext integrity in a single cryptographic primitive.",
+      "recommendation": "Maintain the current AEAD transform proposal.",
+      "references": [
+        {
+          "source": "NIST SP 800-77 Rev. 1",
+          "section": "Table 4-1",
+          "title": "Recommended IPsec Ciphers",
+          "guidance": "AES-256-GCM (RFC 4106) provides optimal confidentiality and performance with 256 bits of cryptographic strength."
+        },
+        {
+          "source": "RFC 8221",
+          "section": "Section 3",
+          "title": "ESP Encryption Algorithms",
+          "guidance": "AES-128-GCM and AES-256-GCM are standard MUST implement suites."
+        }
+      ]
+    },
+    {
+      "id": "VPN-DH-001",
+      "category": "Key Exchange",
+      "condition": "insecure_dh_group",
+      "severity": "CRITICAL",
+      "title": "Insecure / Broken Diffie-Hellman Group",
+      "description": "The key exchange uses an obsolete Diffie-Hellman group with modulus under 1536 bits (e.g., Group 1: 768-bit MODP or Group 2: 1024-bit MODP). These groups are vulnerable to precomputation attacks (Logjam).",
+      "recommendation": "Immediately transition to Group 19 (256-bit random ECP / NIST P-256), Group 20 (384-bit random ECP), or Group 14 (2048-bit MODP).",
+      "references": [
+        {
+          "source": "NIST SP 800-77 Rev. 1",
+          "section": "Section 4.3",
+          "title": "Diffie-Hellman Key Exchange Groups",
+          "guidance": "Diffie-Hellman groups providing less than 112 bits of security (MODP < 2048 bits) are strictly disallowed."
+        },
+        {
+          "source": "RFC 8247",
+          "section": "Section 2.4",
+          "title": "Diffie-Hellman Groups for IKEv2",
+          "guidance": "Group 1 (768-bit MODP) and Group 2 (1024-bit MODP) are MUST NOT."
+        }
+      ]
+    },
+    {
+      "id": "VPN-DH-002",
+      "category": "Key Exchange",
+      "condition": "legacy_dh_group",
+      "severity": "HIGH",
+      "title": "Legacy Diffie-Hellman Group (Sub-2048 bit)",
+      "description": "The DH group used (e.g. Group 5: 1536-bit MODP) is deprecated by modern standards as having an inadequate security margin against well-resourced state-level adversaries.",
+      "recommendation": "Upgrade to Diffie-Hellman Group 19 (ecp256), Group 20 (ecp384), or Group 14 (modp2048).",
+      "references": [
+        {
+          "source": "NIST SP 800-77 Rev. 1",
+          "section": "Section 4.3",
+          "title": "Diffie-Hellman Groups",
+          "guidance": "MODP groups with modulus size under 2048 bits are deprecated and disallowed for Federal use."
+        },
+        {
+          "source": "RFC 8247",
+          "section": "Section 2.4",
+          "title": "Diffie-Hellman Groups for IKEv2",
+          "guidance": "Group 5 (1536-bit MODP) is SHOULD NOT."
+        }
+      ]
+    },
+    {
+      "id": "VPN-DH-003",
+      "category": "Key Exchange",
+      "condition": "recommended_dh_group",
+      "severity": "INFO",
+      "title": "Strong / Recommended Diffie-Hellman Group",
+      "description": "The key exchange utilizes a strong modern Diffie-Hellman group: Elliptic Curve Group 19 (NIST P-256), Group 20 (NIST P-384), or 2048-bit MODP (Group 14).",
+      "recommendation": "Maintain the current Diffie-Hellman group configuration.",
+      "references": [
+        {
+          "source": "NIST SP 800-77 Rev. 1",
+          "section": "Section 4.3",
+          "title": "Diffie-Hellman Groups",
+          "guidance": "Group 19 (ecp256) and Group 20 (ecp384) provide superior cryptographic security margin and computational efficiency."
+        },
+        {
+          "source": "RFC 8247",
+          "section": "Section 2.4",
+          "title": "Diffie-Hellman Groups for IKEv2",
+          "guidance": "Group 19 (256-bit Random ECP) is RECOMMENDED; Group 14 (2048-bit MODP) is MUST."
+        }
+      ]
+    },
+    {
+      "id": "VPN-PFS-001",
+      "category": "Key Management",
+      "condition": "pfs_disabled",
+      "severity": "MEDIUM",
+      "title": "Perfect Forward Secrecy (PFS) Disabled",
+      "description": "Perfect Forward Secrecy is disabled for Child SAs. New Child SA keys are derived from the existing IKE SA keying material without an independent Diffie-Hellman exchange. If the IKE SA master key is ever compromised, all past session traffic can be retroactively decrypted.",
+      "recommendation": "Enable Perfect Forward Secrecy (PFS) in Child SA configurations.",
+      "references": [
+        {
+          "source": "NIST SP 800-77 Rev. 1",
+          "section": "Section 4.4",
+          "title": "IKE Security Features",
+          "guidance": "PFS ensures that compromise of a single key permits access only to data protected by that specific key. NIST recommends enabling PFS for Child SAs."
+        },
+        {
+          "source": "RFC 7296",
+          "section": "Section 1.3",
+          "title": "The CREATE_CHILD_SA Exchange",
+          "guidance": "A new Diffie-Hellman exchange in CREATE_CHILD_SA provides Perfect Forward Secrecy, ensuring that key compromises do not cascade to past sessions."
+        }
+      ]
+    },
+    {
+      "id": "VPN-PFS-002",
+      "category": "Key Management",
+      "condition": "pfs_enabled",
+      "severity": "INFO",
+      "title": "Perfect Forward Secrecy (PFS) Enabled",
+      "description": "Perfect Forward Secrecy is active. Each renegotiation of Child SAs executes an independent Diffie-Hellman exchange, ensuring cryptographic key isolation across all sessions.",
+      "recommendation": "Maintain PFS enabled across all tunnel configurations.",
+      "references": [
+        {
+          "source": "NIST SP 800-77 Rev. 1",
+          "section": "Section 4.4",
+          "title": "Forward Secrecy Best Practice",
+          "guidance": "PFS is a vital defense-in-depth measure against retroactive traffic decryption."
+        }
+      ]
+    },
+    {
+      "id": "VPN-IKE-001",
+      "category": "Key Management",
+      "condition": "ikev1_deprecated",
+      "severity": "HIGH",
+      "title": "Deprecated IKEv1 Protocol Detected",
+      "description": "The VPN tunnel negotiates using IKEv1 (RFC 2409). IKEv1 is deprecated due to structural protocol vulnerabilities, lack of native EAP/MOBIKE support, susceptibility to offline dictionary attacks in Aggressive Mode, and amplification DDoS vectors.",
+      "recommendation": "Upgrade gateway endpoints to IKEv2 (RFC 7296). Disable IKEv1 listener daemons.",
+      "references": [
+        {
+          "source": "NIST SP 800-77 Rev. 1",
+          "section": "Section 4.4",
+          "title": "IKE Protocol Versions",
+          "guidance": "Organizations must transition all IPsec VPNs to IKEv2. IKEv1 is legacy and should not be used in new deployments."
+        },
+        {
+          "source": "RFC 7296",
+          "section": "Appendix A",
+          "title": "Differences between IKEv1 and IKEv2",
+          "guidance": "IKEv2 replaces IKEv1, streamlining negotiations from 4-6 messages down to 4, eliminating Aggressive Mode flaws, and integrating anti-DoS mechanisms."
+        }
+      ]
+    },
+    {
+      "id": "VPN-IKE-002",
+      "category": "Key Management",
+      "condition": "ikev2_recommended",
+      "severity": "INFO",
+      "title": "Modern IKEv2 Protocol Active",
+      "description": "The VPN session utilizes IKEv2 (RFC 7296), featuring robust cookie-based anti-DoS handshakes, streamlined message exchanges, and native rekeying.",
+      "recommendation": "Maintain IKEv2 as the sole active key exchange protocol.",
+      "references": [
+        {
+          "source": "RFC 7296",
+          "section": "Section 1",
+          "title": "IKEv2 Overview",
+          "guidance": "IKEv2 is the standard protocol for performing mutual authentication and establishing Security Associations for IPsec."
+        }
+      ]
+    },
+    {
+      "id": "VPN-AUTH-001",
+      "category": "Integrity",
+      "condition": "weak_auth_algorithm",
+      "severity": "HIGH",
+      "title": "Deprecated Integrity Algorithm (MD5 / SHA-1)",
+      "description": "The integrity or authentication suite utilizes MD5 or SHA-1 (e.g., HMAC-MD5, HMAC-SHA1). These hash algorithms suffer from practical collision attacks.",
+      "recommendation": "Upgrade authentication algorithm to HMAC-SHA-256, HMAC-SHA-384, or use AEAD ciphers with built-in 128-bit authentication tags (AES-GCM).",
+      "references": [
+        {
+          "source": "NIST SP 800-131A Rev. 2",
+          "section": "Section 1.2",
+          "title": "Transitioning the Use of Cryptographic Algorithms",
+          "guidance": "SHA-1 and MD5 are disallowed for digital signature and integrity generation across all security protocols."
+        },
+        {
+          "source": "RFC 8247",
+          "section": "Section 2.3",
+          "title": "Integrity Algorithms for IKEv2",
+          "guidance": "AUTH_HMAC_MD5_96 is MUST NOT; AUTH_HMAC_SHA1_96 is SHOULD NOT; AUTH_HMAC_SHA2_256_128 is MUST."
+        }
+      ]
+    },
+    {
+      "id": "VPN-ESP-001",
+      "category": "Tunnel Integrity",
+      "condition": "zero_spi_anomaly",
+      "severity": "CRITICAL",
+      "title": "Zero SPI Detected in ESP Header",
+      "description": "An ESP packet has an SPI value of 0x00000000. Under RFC 4303, the SPI value 0 is strictly reserved and MUST NOT be used for an operational Security Association.",
+      "recommendation": "Inspect gateway implementation for memory corruption, uninitialized buffer states, or malformed packet injection.",
+      "references": [
+        {
+          "source": "RFC 4303",
+          "section": "Section 2.1",
+          "title": "Security Parameters Index (SPI)",
+          "guidance": "The set of SPI values in the range 1 through 255 are reserved by IANA. The value 0 is reserved for local implementation use and MUST NOT be sent on the wire."
+        }
+      ]
+    },
+    {
+      "id": "VPN-ESP-002",
+      "category": "Tunnel Integrity",
+      "condition": "replay_protection_anomaly",
+      "severity": "HIGH",
+      "title": "ESP Sequence Number Anomaly / Potential Replay",
+      "description": "Observable ESP sequence numbers demonstrate non-monotonic regression or significant duplicate packet indices, indicating network reordering, packet duplication, or potential replay attack attempts.",
+      "recommendation": "Verify anti-replay window configuration on the receiving gateway and investigate underlying transit network path.",
+      "references": [
+        {
+          "source": "RFC 4303",
+          "section": "Section 3.4.3",
+          "title": "Replay Protection",
+          "guidance": "ESP implementations MUST support the anti-replay service. The receiver uses a sliding window to detect and reject replayed packets."
+        }
+      ]
+    },
+    {
+      "id": "VPN-MODE-001",
+      "category": "Architecture",
+      "condition": "tunnel_mode_gateway",
+      "severity": "INFO",
+      "title": "Site-to-Site Tunnel Mode Active",
+      "description": "The VPN operates in Tunnel mode, encapsulating the entire original IP datagram within a new outer IP header. This provides optimal security architecture for gateway-to-gateway topology.",
+      "recommendation": "Maintain Tunnel mode for multi-host and gateway-to-gateway environments.",
+      "references": [
+        {
+          "source": "RFC 4301",
+          "section": "Section 4.1",
+          "title": "Tunnel Mode versus Transport Mode",
+          "guidance": "Tunnel mode encapsulates the inner IP datagram completely, hiding inner subnet topology and host addresses from transit networks."
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,29 @@
+{
+  "capture_id": "weak_capture",
+  "vpn_mode": "tunnel",
+  "ip_version": "ipv4",
+  "encryption": "AES-128-CBC",
+  "pfs": false,
+  "dh_group": 5,
+  "dh_group_name": "modp1536",
+  "traffic_type": "web",
+  "ike_proposal": "aes128-sha256-modp1536",
+  "esp_proposal": "aes128-sha256!",
+  "timestamp": "2026-09-17T05:16:33Z",
+  "packet_count": 198,
+  "ike_packets": 6,
+  "esp_packets": 192,
+  "file_path": "SIH_prototype\\demo_data\\weak_capture.pcap",
+  "file_size_bytes": 44272,
+  "tunnel_established": true,
+  "traffic_generation_result": {
+    "traffic_type": "web",
+    "target_ip": "10.10.2.1",
+    "port": 8080,
+    "requests_sent": 15,
+    "successful_requests": 15,
+    "bytes_transferred": 6319,
+    "duration_seconds": 2.308532953262329,
+    "success": true
+  }
+}

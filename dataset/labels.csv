@@ -1,0 +1,24 @@
+capture_id,vpn_mode,encryption,authentication,dh_group,pfs,ip_version,traffic_type,total_packets,esp_packets,ike_packets,flow_duration_sec,raw_pcap,processed_features_file
+ambiguous_capture,tunnel,Unknown / Not Detected,Unknown / Not Detected,Unknown / Not Detected,Unknown / Not Detected,ipv4,Unknown / Not Detected,1064,1064,0,2.2599,dataset/raw/ambiguous_capture.pcap,dataset/processed/ambiguous_capture_features.json
+capture_bulk_01,tunnel,AES-256-GCM,12,19,True,ipv4,bulk,350,350,0,0.3541,dataset/raw/capture_bulk_01.pcap,dataset/processed/capture_bulk_01_features.json
+capture_bulk_02,tunnel,AES-128-CBC,12,14,True,ipv4,bulk,600,600,0,0.5945,dataset/raw/capture_bulk_02.pcap,dataset/processed/capture_bulk_02_features.json
+capture_bulk_03,tunnel,AES-256-GCM,12,19,True,ipv4,bulk,850,850,0,0.8485,dataset/raw/capture_bulk_03.pcap,dataset/processed/capture_bulk_03_features.json
+capture_icmp_02,tunnel,AES-128-CBC,12,19,True,ipv4,icmp,26,20,6,4.6108,dataset/raw/capture_icmp_02.pcap,dataset/processed/capture_icmp_02_features.json
+capture_icmp_03,tunnel,AES-256-GCM,12,19,True,ipv4,icmp,24,24,0,3.4316,dataset/raw/capture_icmp_03.pcap,dataset/processed/capture_icmp_03_features.json
+capture_icmp_04,tunnel,AES-128-CBC,12,14,True,ipv4,icmp,48,48,0,8.0821,dataset/raw/capture_icmp_04.pcap,dataset/processed/capture_icmp_04_features.json
+capture_video_01,tunnel,AES-256-GCM,12,19,True,ipv4,video,1290,1284,6,2.0373,dataset/raw/capture_video_01.pcap,dataset/processed/capture_video_01_features.json
+capture_video_02,tunnel,AES-128-CBC,12,19,True,ipv4,video,1327,1321,6,2.0435,dataset/raw/capture_video_02.pcap,dataset/processed/capture_video_02_features.json
+capture_video_03,tunnel,AES-256-GCM,12,19,True,ipv4,video,345,345,0,1.5397,dataset/raw/capture_video_03.pcap,dataset/processed/capture_video_03_features.json
+capture_video_04,tunnel,AES-128-CBC,12,14,True,ipv4,video,544,544,0,2.581,dataset/raw/capture_video_04.pcap,dataset/processed/capture_video_04_features.json
+capture_voip_01,tunnel,AES-256-GCM,12,19,True,ipv4,voip,106,100,6,1.0067,dataset/raw/capture_voip_01.pcap,dataset/processed/capture_voip_01_features.json
+capture_voip_02,tunnel,AES-128-CBC,12,14,True,ipv4,voip,106,100,6,1.011,dataset/raw/capture_voip_02.pcap,dataset/processed/capture_voip_02_features.json
+capture_voip_03,tunnel,AES-256-GCM,12,19,True,ipv4,voip,60,60,0,0.6301,dataset/raw/capture_voip_03.pcap,dataset/processed/capture_voip_03_features.json
+capture_voip_04,tunnel,AES-128-CBC,12,14,True,ipv4,voip,120,120,0,1.2594,dataset/raw/capture_voip_04.pcap,dataset/processed/capture_voip_04_features.json
+capture_web_02,tunnel,AES-128-CBC,12,14,True,ipv4,web,93,93,0,2.5559,dataset/raw/capture_web_02.pcap,dataset/processed/capture_web_02_features.json
+capture_web_03,tunnel,AES-256-GCM,12,19,True,ipv4,web,156,156,0,4.9947,dataset/raw/capture_web_03.pcap,dataset/processed/capture_web_03_features.json
+demo_001,tunnel,AES-256-GCM,12,19,True,ipv4,web,196,190,6,2.1309,dataset/raw/demo_001.pcap,dataset/processed/demo_001_features.json
+demo_capture,tunnel,AES-256-GCM,12,19,True,ipv4,web,196,190,6,2.1309,dataset/raw/demo_capture.pcap,dataset/processed/demo_capture_features.json
+pytest_capture_01,tunnel,AES-256-GCM,12,19,True,ipv4,icmp,26,20,6,4.622,dataset/raw/pytest_capture_01.pcap,dataset/processed/pytest_capture_01_features.json
+test_debug,tunnel,AES-256-GCM,12,19,Unknown / Not Detected,ipv4,Unknown / Not Detected,7,0,7,0.0,dataset/raw/test_debug.pcap,dataset/processed/test_debug_features.json
+test_priv,tunnel,Unknown / Not Detected,Unknown / Not Detected,Unknown / Not Detected,Unknown / Not Detected,ipv4,Unknown / Not Detected,2,0,0,0.0,dataset/raw/test_priv.pcap,dataset/processed/test_priv_features.json
+weak_capture,tunnel,AES-128-CBC,12,5,False,ipv4,web,198,192,6,2.1494,dataset/raw/weak_capture.pcap,dataset/processed/weak_capture_features.json

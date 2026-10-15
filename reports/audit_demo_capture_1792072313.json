@@ -1,0 +1,320 @@
+{
+  "report_id": "audit_demo_capture_1792072313",
+  "timestamp": "2026-10-15T13:51:53.991342+00:00",
+  "summary": {
+    "analysis_id": "demo_capture",
+    "timestamp": "2026-10-15T13:51:53.991342+00:00",
+    "overall_risk_score": 15,
+    "severity": "LOW",
+    "ipsec_detected": true,
+    "ike_version": "IKEv2",
+    "encryption": "AES-256-GCM",
+    "dh_group": "ecp256 (19)",
+    "pfs": "Unknown / Not Detected",
+    "traffic_classification": "Web",
+    "traffic_confidence": 1.0,
+    "compliance_rating": "COMPLIANT",
+    "summary_narrative": "SentraIPS completed assessment for capture 'demo_capture'. Evaluated risk score is 15/100 (LOW). Observed cryptographic parameters: IKEv2, AES-256-GCM, DH ecp256 (19), PFS Unknown / Not Detected. Encrypted traffic classified as 'Web' with 100.0% confidence."
+  },
+  "vpn_configuration": {
+    "vpn_mode": "tunnel",
+    "ike_version": "IKEv2",
+    "encryption": "AES-256-GCM",
+    "encryption_key_length": 256,
+    "authentication": "12",
+    "dh_group": 19,
+    "dh_group_name": "ecp256",
+    "pfs": "Unknown / Not Detected",
+    "esp_detected": true,
+    "initiator_spi": "0x4036c450df28250c",
+    "responder_spi": "0xb8206f62744fb232",
+    "total_packets": 196,
+    "ike_packets": 6,
+    "esp_packets": 190,
+    "observation_provenance": {
+      "encryption": "OBSERVED",
+      "dh_group": "OBSERVED",
+      "pfs": "OBSERVED",
+      "ike_version": "OBSERVED",
+      "vpn_mode": "OBSERVED"
+    }
+  },
+  "traffic_analysis": {
+    "traffic_type": "Web",
+    "confidence": 1.0,
+    "ml_confidence": null,
+    "model": "RandomForest",
+    "model_used": null,
+    "packet_count": 190,
+    "flow_duration_sec": 2.1309,
+    "mean_packet_size": 187.14,
+    "packet_size_min": 122.0,
+    "packet_size_max": 1250.0,
+    "packet_size_std": 188.1,
+    "std_packet_size": null,
+    "min_packet_size": null,
+    "max_packet_size": null,
+    "mean_iat_ms": 11.275,
+    "burst_count": 15,
+    "mean_burst_bytes": 2370.4,
+    "probabilities": {
+      "Bulk/Data Transfer": 0.0,
+      "ICMP": 0.0,
+      "Video": 0.0,
+      "VoIP": 0.0,
+      "Web": 1.0
+    },
+    "is_inferred": true
+  },
+  "security_assessment": {
+    "risk_score": 15,
+    "severity": "LOW",
+    "score_breakdown": [
+      {
+        "finding_id": "VPN-001",
+        "rule_id": "METADATA_EXPOSURE_FLOW_INFERENCE",
+        "title": "Traffic Analysis & Flow Pattern Exposure",
+        "severity": "LOW",
+        "points": 10,
+        "category": "Metadata Exposure",
+        "reason": "Even with strong encryption, packet size distributions, burst dynamics, and inter-arrival timing remain visible to network eavesdroppers, allowing application profiling (e.g. identifying VoIP vs Web vs Video)."
+      },
+      {
+        "finding_id": "VPN-002",
+        "rule_id": "METADATA_EXPOSURE_PLAINTEXT_IKE_HEADERS",
+        "title": "Cleartext IKE Handshake Metadata",
+        "severity": "LOW",
+        "points": 5,
+        "category": "Metadata Exposure",
+        "reason": "The initial IKE_SA_INIT exchange exposes initiator and responder Security Parameter Indexes (SPIs) and cryptographic negotiation proposals in cleartext."
+      }
+    ]
+  },
+  "findings": [
+    {
+      "id": "VPN-001",
+      "title": "Traffic Analysis & Flow Pattern Exposure",
+      "severity": "LOW",
+      "category": "Metadata Exposure",
+      "description": "Even with strong encryption, packet size distributions, burst dynamics, and inter-arrival timing remain visible to network eavesdroppers, allowing application profiling (e.g. identifying VoIP vs Web vs Video).",
+      "evidence": {
+        "observed_field": "esp_packets",
+        "observed_value": "190 packets",
+        "packet_source": "Outer IP/ESP packet headers and inter-arrival timestamps",
+        "rule_criterion": "Traffic flow confidentiality (TFC) padding (RFC 4303)",
+        "esp_packets": 190
+      },
+      "impact": "Passive observers can profile application traffic types (VoIP, video, file transfers) from timing and packet sizes.",
+      "recommendation": "Consider implementing IPsec traffic flow confidentiality (TFC) padding (RFC 4303) to mask packet sizes and timing characteristics.",
+      "confidence": 0.9,
+      "source": "Observed from ESP packet flow",
+      "references": []
+    },
+    {
+      "id": "VPN-002",
+      "title": "Cleartext IKE Handshake Metadata",
+      "severity": "LOW",
+      "category": "Metadata Exposure",
+      "description": "The initial IKE_SA_INIT exchange exposes initiator and responder Security Parameter Indexes (SPIs) and cryptographic negotiation proposals in cleartext.",
+      "evidence": {
+        "observed_field": "ike_packets",
+        "observed_value": "6 IKE packets",
+        "packet_source": "IKE_SA_INIT message headers (UDP 500/4500)",
+        "rule_criterion": "IKEv2 cleartext handshake visibility (RFC 7296)",
+        "ike_packets": 6
+      },
+      "impact": "External network observers learn gateway identity and supported cryptographic suites from initial negotiation.",
+      "recommendation": "This is an unavoidable architectural aspect of IKEv2 negotiation. Ensure gateway external IP addresses are protected behind border firewalls.",
+      "confidence": 1.0,
+      "source": "Observed from IKE handshake",
+      "references": []
+    }
+  ],
+  "compliance": [
+    {
+      "control_id": "COMP-ENC-01",
+      "id": null,
+      "category": "Cryptography",
+      "title": "Symmetric Encryption Algorithm",
+      "parameter": null,
+      "status": "PASS",
+      "observed_value": "AES-256-GCM",
+      "expected_standard": "AES-256-GCM or AES-128-GCM (AEAD)",
+      "standard": null,
+      "framework": "NIST SP 800-77 Rev. 1 & RFC 8221/8247",
+      "rationale": "Complies with NIST SP 800-77 Rev. 1 Table 4-1 and RFC 8221 MUST requirements.",
+      "details": null,
+      "recommendation": null,
+      "references": [
+        {
+          "source": "NIST SP 800-77 Rev. 1",
+          "section": "Table 4-1",
+          "title": "Recommended IPsec Ciphers",
+          "guidance": "AES-256-GCM (RFC 4106) provides optimal confidentiality and performance with 256 bits of cryptographic strength."
+        },
+        {
+          "source": "RFC 8221",
+          "section": "Section 3",
+          "title": "ESP Encryption Algorithms",
+          "guidance": "AES-128-GCM and AES-256-GCM are standard MUST implement suites."
+        }
+      ]
+    },
+    {
+      "control_id": "COMP-DH-01",
+      "id": null,
+      "category": "Key Exchange",
+      "title": "Diffie-Hellman Key Exchange Group",
+      "parameter": null,
+      "status": "PASS",
+      "observed_value": "Group 19 (ecp256)",
+      "expected_standard": "Group 19 (ecp256), Group 20 (ecp384), or Group 14 (modp2048)",
+      "standard": null,
+      "framework": "NIST SP 800-77 Rev. 1 & RFC 8221/8247",
+      "rationale": "Complies with RFC 8247 MUST/RECOMMENDED requirements and NIST SP 800-77 Section 4.3 guidance.",
+      "details": null,
+      "recommendation": null,
+      "references": [
+        {
+          "source": "NIST SP 800-77 Rev. 1",
+          "section": "Section 4.3",
+          "title": "Diffie-Hellman Groups",
+          "guidance": "Group 19 (ecp256) and Group 20 (ecp384) provide superior cryptographic security margin and computational efficiency."
+        },
+        {
+          "source": "RFC 8247",
+          "section": "Section 2.4",
+          "title": "Diffie-Hellman Groups for IKEv2",
+          "guidance": "Group 19 (256-bit Random ECP) is RECOMMENDED; Group 14 (2048-bit MODP) is MUST."
+        }
+      ]
+    },
+    {
+      "control_id": "COMP-PFS-01",
+      "id": null,
+      "category": "Key Management",
+      "title": "Perfect Forward Secrecy (PFS)",
+      "parameter": null,
+      "status": "UNKNOWN",
+      "observed_value": "Unknown / Not Detected",
+      "expected_standard": "Enabled for all Child SAs",
+      "standard": null,
+      "framework": "NIST SP 800-77 Rev. 1 & RFC 8221/8247",
+      "rationale": "Child SA renegotiation exchange was not observed in capture.",
+      "details": null,
+      "recommendation": null,
+      "references": []
+    },
+    {
+      "control_id": "COMP-IKE-01",
+      "id": null,
+      "category": "Key Management",
+      "title": "IKE Protocol Version",
+      "parameter": null,
+      "status": "PASS",
+      "observed_value": "IKEv2 (RFC 7296)",
+      "expected_standard": "IKEv2 (RFC 7296)",
+      "standard": null,
+      "framework": "NIST SP 800-77 Rev. 1 & RFC 8221/8247",
+      "rationale": "Complies with RFC 7296 and NIST SP 800-77 recommendations.",
+      "details": null,
+      "recommendation": null,
+      "references": [
+        {
+          "source": "RFC 7296",
+          "section": "Section 1",
+          "title": "IKEv2 Overview",
+          "guidance": "IKEv2 is the standard protocol for performing mutual authentication and establishing Security Associations for IPsec."
+        }
+      ]
+    },
+    {
+      "control_id": "COMP-AUTH-01",
+      "id": null,
+      "category": "Integrity",
+      "title": "Integrity / Authentication Algorithm",
+      "parameter": null,
+      "status": "PASS",
+      "observed_value": "SHA-256 (IANA ID 12)",
+      "expected_standard": "SHA-256, SHA-384, or AEAD ICV",
+      "standard": null,
+      "framework": "NIST SP 800-77 Rev. 1 & RFC 8221/8247",
+      "rationale": "Complies with RFC 8247 Section 2.3 MUST requirements.",
+      "details": null,
+      "recommendation": null,
+      "references": []
+    },
+    {
+      "control_id": "COMP-MODE-01",
+      "id": null,
+      "category": "Architecture",
+      "title": "VPN Encapsulation Architecture",
+      "parameter": null,
+      "status": "PASS",
+      "observed_value": "Tunnel Mode (Site-to-Site / Gateway)",
+      "expected_standard": "Tunnel Mode for Gateway-to-Gateway",
+      "standard": null,
+      "framework": "NIST SP 800-77 Rev. 1 & RFC 8221/8247",
+      "rationale": "Complies with RFC 4301 Section 4.1 gateway encapsulation requirements.",
+      "details": null,
+      "recommendation": null,
+      "references": [
+        {
+          "source": "RFC 4301",
+          "section": "Section 4.1",
+          "title": "Tunnel Mode versus Transport Mode",
+          "guidance": "Tunnel mode encapsulates the inner IP datagram completely, hiding inner subnet topology and host addresses from transit networks."
+        }
+      ]
+    },
+    {
+      "control_id": "COMP-ESP-01",
+      "id": null,
+      "category": "Tunnel Integrity",
+      "title": "ESP Protocol Progression & Header Integrity",
+      "parameter": null,
+      "status": "PASS",
+      "observed_value": "190 ESP packets with valid SPI progression",
+      "expected_standard": "Valid SPI and active anti-replay progression",
+      "standard": null,
+      "framework": "NIST SP 800-77 Rev. 1 & RFC 8221/8247",
+      "rationale": "Observed ESP packets demonstrate healthy sequence progression and non-zero SPI values.",
+      "details": null,
+      "recommendation": null,
+      "references": []
+    }
+  ],
+  "compliance_summary": {
+    "total_checks": 7,
+    "passed": 6,
+    "warnings": 0,
+    "failed": 0,
+    "unknown": 1
+  },
+  "recommendations": [
+    {
+      "id": "REC-001",
+      "priority": "LOW",
+      "title": "Remediate: Traffic Analysis & Flow Pattern Exposure",
+      "action": "Evaluate IPsec Traffic Flow Confidentiality (TFC) padding (RFC 4303) if packet size profiling is a threat.",
+      "target_parameter": "Metadata Exposure",
+      "rationale": "Consider implementing IPsec traffic flow confidentiality (TFC) padding (RFC 4303) to mask packet sizes and timing characteristics."
+    },
+    {
+      "id": "REC-002",
+      "priority": "LOW",
+      "title": "Remediate: Cleartext IKE Handshake Metadata",
+      "action": "This is an unavoidable architectural aspect of IKEv2 negotiation. Ensure gateway external IP addresses are protected behind border firewalls.",
+      "target_parameter": "Metadata Exposure",
+      "rationale": "This is an unavoidable architectural aspect of IKEv2 negotiation. Ensure gateway external IP addresses are protected behind border firewalls."
+    }
+  ],
+  "limitations": [
+    "ESP payload contents are fully encrypted; analysis is strictly limited to observable outer packet headers, SPI metadata, and sequence progression.",
+    "Rekeyed Child SA transform attributes negotiated inside encrypted IKE_AUTH or CREATE_CHILD_SA payloads cannot be observed without decryption keys.",
+    "Encrypted ESP payload contents were never decrypted; all analysis is derived strictly from outer packet headers and inter-arrival timing.",
+    "ML traffic classification represents a probabilistic inference based on observed outer packet size and burst distributions, not deterministic payload inspection."
+  ],
+  "html_url": "/reports/audit_demo_capture_1792072313/html",
+  "json_url": "/reports/audit_demo_capture_1792072313"
+}

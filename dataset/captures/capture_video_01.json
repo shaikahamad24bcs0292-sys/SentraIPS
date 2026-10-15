@@ -1,0 +1,28 @@
+{
+  "capture_id": "capture_video_01",
+  "vpn_mode": "tunnel",
+  "ip_version": "ipv4",
+  "encryption": "AES-256-GCM",
+  "pfs": true,
+  "dh_group": 19,
+  "dh_group_name": "ecp256",
+  "traffic_type": "video",
+  "ike_proposal": "aes256gcm16-sha256-ecp256,aes256-sha256-ecp256",
+  "esp_proposal": "aes256gcm16-ecp256!",
+  "timestamp": "2026-09-17T05:49:25Z",
+  "packet_count": 1290,
+  "ike_packets": 6,
+  "esp_packets": 1284,
+  "file_path": "dataset\\captures\\capture_video_01.pcap",
+  "file_size_bytes": 1096978,
+  "tunnel_established": true,
+  "traffic_generation_result": {
+    "traffic_type": "video",
+    "target_ip": "10.10.2.1",
+    "port": 8080,
+    "successful_streams": 2,
+    "total_bytes": 917504,
+    "duration_seconds": 2.040029764175415,
+    "success": true
+  }
+}
